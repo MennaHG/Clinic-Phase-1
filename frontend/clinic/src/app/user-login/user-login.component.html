@@ -1,0 +1,24 @@
+<head>
+    <!-- <link rel="stylesheet" href="../user-register/user-register.component.css">    -->
+    
+    
+    </head>
+    
+    <body>
+        <form>
+            <div id="formbox">
+            
+                   <div class="row"> <label for="email">Email: </label><input type="text" [(ngModel)]="data.email" id="email" name="email"> <br> </div>
+                    <div class="row">  <label for="password">Password: </label><input type="password" [(ngModel)]="data.password" id="password" name="password"> <br> </div>
+                    
+                    <router-outlet>
+
+                    <button (click)="loginUser()">Sign In</button>
+                    <!-- <a href="../user-register/user-register.component.html">New User?</a> -->
+                    <a routerLink="/signup">New User?</a>
+                    </router-outlet>
+
+            </div>
+        </form>
+    
+    </body>

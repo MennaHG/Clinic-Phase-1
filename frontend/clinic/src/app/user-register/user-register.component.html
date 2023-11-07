@@ -1,0 +1,29 @@
+<head>
+    <link rel="stylesheet" href="user-register.component.css">   
+    
+    
+    </head>
+    
+    <body>
+        <form>
+            <div id="formbox">
+            
+                   <div class="row"> <label for="email">Email: </label><input type="text" [(ngModel)]="data.email" id="email" name="email"> <br> </div>
+                    <div class="row">  <label for="password">Password: </label><input type="password" [(ngModel)]="data.password" id="password" name="password"> <br> </div>
+                    
+                    <div class="row"> User Type:   
+                        <input type="radio" id="patient" [(ngModel)]="data.patient" name="usertype" [value]="true"> 
+                        <label for="patient">Patient</label>
+                        <input type="radio" id="doctor" [(ngModel)]="data.patient" name="usertype" [value]="false" > 
+                        <label for="doctor">Doctor</label> </div>
+                        <router-outlet>
+
+                    <button (click)="addUser()">Sign Up</button>
+                    <a routerLink="/signin">Already an user?</a>
+                </router-outlet>
+            </div>
+            
+        </form>
+    
+        
+    </body>
