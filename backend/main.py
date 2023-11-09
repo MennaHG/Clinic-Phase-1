@@ -3,7 +3,7 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 app.secret_key="ToolsProject"
-CORS(app)
+CORS(app,supports_credentials=True)
 
 @app.route("/")
 def hello_world():
@@ -17,7 +17,7 @@ def Signup():
         session["email"]=email
         password =data["password"]
         type=data["patient"]
-        print(email)
+        
         
         
     # handle database
@@ -48,4 +48,3 @@ def Signin():
 ##@app.route("/patient",methods=["GET"])
 if __name__ =="__main__":
     app.run(debug=True)
-
