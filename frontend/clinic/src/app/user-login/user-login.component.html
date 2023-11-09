@@ -8,8 +8,8 @@
         <form>
             <div id="formbox">
             
-                   <div class="row"> <label for="email">Email: </label><input type="text" [(ngModel)]="data.email" id="email" name="email"> <br> </div>
-                    <div class="row">  <label for="password">Password: </label><input type="password" [(ngModel)]="data.password" id="password" name="password"> <br> </div>
+                   <div class="row"> <label for="email">Email: </label><input type="text" [(ngModel)]="data.email" id="email" name="email" required> <br> </div>
+                    <div class="row">  <label for="password">Password: </label><input type="password" [(ngModel)]="data.password" id="password" name="password" required> <br> </div>
                     
                     <router-outlet>
 
