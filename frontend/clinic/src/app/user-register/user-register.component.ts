@@ -28,7 +28,7 @@ export class UserRegisterComponent {
   console.log("user data",data)
     
   if(data.patient){
-    this.router.navigate(['']);}
+    this.router.navigate(['patient']);}
   else{
     this.router.navigate(["dr"]);}
 

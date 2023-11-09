@@ -1,5 +1,5 @@
 <head>
-    <link rel="stylesheet" href="./doctor.component.css"/>
+    <link rel="stylesheet" href="./patient.component.css"/>
     <script type="text/javascript">
       
     </script>
@@ -7,10 +7,10 @@
 <body>
   
 <div class="top" >
-    Hello,Doctor
+    Hello,Patient
 </div>
 
-<h2>Slots</h2>
+<h2>Appointment</h2>
 <table  mat-table [dataSource]="dataSource" >
     <ng-container [matColumnDef]="col.key" *ngFor="let col of columnsSchema">
       <th mat-header-cell *matHeaderCellDef>
@@ -30,7 +30,7 @@
             {{ element[col.key] }}
           </span>
         </div>
-        <div [ngSwitch]="col.type" *ngIf="element.isEdit">
+        <div [ngSwitch]="col.key" *ngIf="element.isEdit">
           <div class="btn-edit" *ngSwitchCase="'isEdit'">
             <button mat-button style="background-color: rgb(38, 175, 38);"  (click)="element.isEdit = !element.isEdit">Done</button>
           </div>
@@ -43,9 +43,15 @@
             ></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
           </mat-form-field> -->
-          <mat-form-field *ngSwitchDefault>
-            <input 
-            [type]="col.type" matInput [(ngModel)]="element[col.key]" />
+          <mat-form-field *ngSwitchCase="'Appointment'">
+            <mat-select [(value)]="element[col.key]">
+              <mat-option *ngFor="let slot of DrSlots" [value]="slot">{{slot}}</mat-option>
+            </mat-select>
+            </mat-form-field>
+            <mat-form-field *ngSwitchCase="'Doctor'" >
+            <mat-select [(value)]="element[col.key]">
+              <mat-option  *ngFor="let dr of doctors" [value]="dr.name" >{{dr.name}}</mat-option>
+            </mat-select>
           </mat-form-field>
         </div>
       </td>
@@ -53,10 +59,19 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
-<h2>Add new Slot</h2>
+<h2>Add new Appointment</h2>
 <table border="1" id="slot">
-    <tr><th>Date</th> <td><input type="date" id="date" name="date" value="" min="new Date()" /></td></tr>
-    <tr><th>Hour</th> <td> <input type="time" id="time" name="time" value=""></td></tr>
-</table>
-<button type="button" (click)="add()">Add Slot</button>
+    <tr><th><label for="drs"> Select Doctor</label></th> 
+        <!-- (ngModelChange)="getSlots(Doctors)" -->
+        <td> <select name="drs" id="drs" (change)="getSlots()">
+            <option *ngFor="let dr of doctors" [value]="dr.name">{{dr.name}}</option>
+            </select>
+        </td></tr>
+        <tr><th><label for="appts"> Select Appointment</label></th> 
+            <td> <select name="appts" id="appts">
+                    <option *ngFor="let slot of DrSlots" [value]=[slot]>{{slot}}</option> 
+                </select>
+            </td></tr>
+    </table>
+<button type="button" (click)="add()">Reserve</button>
 </body>

@@ -20,12 +20,16 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatNativeDateModule } from '@angular/material/core';
 import { DoctorComponent } from './doctor/doctor.component';
+import { PatientComponent } from './patient/patient.component';
+import { MatSelectModule } from '@angular/material/select';
+import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 @NgModule({
   declarations: [
     AppComponent,
     UserRegisterComponent,
     UserLoginComponent,
     DoctorComponent,
+    PatientComponent,
   ],
   imports: [
     BrowserModule,
@@ -36,7 +40,7 @@ import { DoctorComponent } from './doctor/doctor.component';
     MatButtonModule,
     MatDatepickerModule,
     MatNativeDateModule,DynamicTableModule,
-    FormsModule,
+    FormsModule,MatSelectModule,MatFormFieldModule,
     MatCheckboxModule,
     MatDialogModule,
 

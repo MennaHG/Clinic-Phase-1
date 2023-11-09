@@ -42,15 +42,8 @@ export class DoctorComponent {
   constructor(@Inject(DOCUMENT) private document:Document,service:DoctorService){
     // How to return email??
     //this.dataSource = service.getSlots(this.email);
-    this.CheckEmpty();
   }
 
-  CheckEmpty(){
-    console.log(this.dataSource.length)
-  //  if(this.dataSource.length == 1){
-     // this.removeRow(1);
-    //}
-  }
   add(){
     let dateInput = this.document.getElementById("date") as HTMLInputElement;
     let hourInput = this.document.getElementById("time") as HTMLInputElement;

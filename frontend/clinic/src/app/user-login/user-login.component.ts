@@ -20,7 +20,15 @@ export class UserLoginComponent{
   loginUser(){
 // !!verify correct creds then navigate to assigned user homepage if correct creds
 
+  const data = {
+    email: this.data.email,
+    password: this.data.password,
+    patient : this.data.patient
+  };
 
+  return this.userService.loginUser(data);
+
+  //console.log("user data in login comp",data)
 
   //   const data = {
   //     email: this.data.email,
