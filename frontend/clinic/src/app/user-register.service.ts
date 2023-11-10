@@ -14,7 +14,11 @@ export class UserRegisterService {
   
   addUser(data: { email: string; password: string, patient:boolean}){
     console.log(data)
-    return this.http.post(`${API_URL}/SignUp`, data);
-
+    return this.http.post(`${API_URL}/SignUp`, data)
+      .subscribe(
+        response => console.log(response),
+        error => console.error(error)
+      );
   }
+  
 }

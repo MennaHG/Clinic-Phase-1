@@ -10,10 +10,6 @@ app = Flask(__name__)
 app.secret_key="ToolsProject"
 CORS(app,supports_credentials=True)
 
-process = subprocess.run(['mongosh','-f','database/mongoScript.js'], 
-                         stdout=subprocess.PIPE, 
-                         universal_newlines=True)
-process
 
 
 # the uri to connect to
@@ -86,8 +82,8 @@ def Signin():
 
 
 #Doctor set his schedule. (Inserting a slot)
-@app.route("/Doctor",methods=["PUT"])
-def insertSlot():
+@app.route("/Doctor/<date>/<time>",methods=["PUT"])
+def insertSlot(date,time):
     pass
 #Patients select doctor, view his available slots, then patient chooses a slot.
 ##@app.route("/Patient",methods=[])
