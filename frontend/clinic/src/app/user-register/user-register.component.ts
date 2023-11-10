@@ -14,6 +14,8 @@ export class UserRegisterComponent {
     password:'',
     patient:true    //1 for patient 2 for doctor
   }
+
+
   constructor(private userService: UserRegisterService, public router:Router,private renderer2:Renderer2,@Inject (DOCUMENT) private document: Document) { }
 
   addUser(){
@@ -22,7 +24,7 @@ export class UserRegisterComponent {
       password: this.data.password,
       patient : this.data.patient
     };
-
+  
     this.userService.addUser(data);
     
   console.log("user data",data)

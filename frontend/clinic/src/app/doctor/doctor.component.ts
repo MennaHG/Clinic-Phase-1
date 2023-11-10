@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog'
 import { MatTableDataSource } from '@angular/material/table'
 import { ColumnConfig } from 'material-dynamic-table';
 import { DoctorService } from '../doctor.service';
-
+import { CookieService } from 'ngx-cookie-service';
 
 let USER_DATA = [
  // {"id":1,"date": new Date().getMonth()+'/'+new Date().getDay()+'/'+new Date().getFullYear(), "hour": new Date().getHours()+':'+new Date().getMinutes()}
@@ -34,16 +34,22 @@ const COLUMNS_SCHEMA = [
   styleUrls: ['./doctor.component.css']
 })
 export class DoctorComponent {
+
   displayedColumns: string[] = COLUMNS_SCHEMA.map((col) => col.key);
   dataSource: any=[];
-  email:string='';
+  email:any;
   columnsSchema: any = COLUMNS_SCHEMA;
   
   constructor(@Inject(DOCUMENT) private document:Document,service:DoctorService){
     // How to return email??
     //this.dataSource = service.getSlots(this.email);
+  //  this.email = this.cookieservice.get("email");
+    //console.log(this.email)
   }
 
+  ngOnInit(){  
+    this.email = sessionStorage.getItem("email"); console.log("DR"+this.email);
+  }
   add(){
     let dateInput = this.document.getElementById("date") as HTMLInputElement;
     let hourInput = this.document.getElementById("time") as HTMLInputElement;

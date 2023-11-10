@@ -40,7 +40,7 @@ const COLUMNS_SCHEMA = [
 export class PatientComponent {
   displayedColumns: string[];
   dataSource: any;
-  email:string='';
+  email:any;
   columnsSchema: any ;
   DrSlots:string[] ;
   public doctors: { name: string; }[];
@@ -61,6 +61,9 @@ export class PatientComponent {
     //this.DrSlots = this.patientservice.getSlots(drname);
   }
 
+  ngOnInit(){  
+    this.email = sessionStorage.getItem("email"); console.log("PATIENT"+this.email);
+  }
   getDrs(){
     
     //this.doctors = this.patientservice.getDrs();

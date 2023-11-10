@@ -23,6 +23,7 @@ import { DoctorComponent } from './doctor/doctor.component';
 import { PatientComponent } from './patient/patient.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
+import { CookieService } from 'ngx-cookie-service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -45,7 +46,7 @@ import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
     MatDialogModule,
 
   ],
-  providers: [],
+  providers: [CookieService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
