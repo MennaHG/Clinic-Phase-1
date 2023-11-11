@@ -100,15 +100,37 @@ def insertSlot(email):
     schedule_collection.update_one({'doctorID':doctor_id['_id']},{'$set':{'slotNum':count}})
     schedule_collection.update_one({'doctorID':doctor_id['_id']},{'$push':{'slots':{new_slot:{'date':data['date'],'hour':data['hour'],'available':True}}}})
 
-    return jsonify({"message":email})
+    return jsonify({"message":"slot added successfully"})
+
 #edit and cancel
+
 #Patients select doctor, view his available slots, then patient chooses a slot.
-##@app.route("/Patient",methods=[])
+@app.route("/Patient/getDoctors",methods=["GET"])
+def getDoctors():
+
+    doctors_collection = db.doctors
+    doctors = doctors_collection.find()
+    doctors_list = [doctor.get("email") for doctor in doctors]
+    
+    return jsonify(doctors_list)
+
+@app.route("/Patient/viewSlots/<email>",methods=["GET"])
+def viewSlots(email):
+
+    doctors_collection = db.doctors
+    doctor_id = doctors_collection.find_one({"email":email})
+    schedule_collection = db.schedules
+    schedule = schedule_collection.find_one({'doctorID':doctor_id['_id']})
+    slots_lits = schedule['slots']
+    
+    return jsonify(slots_lits)
+
 #Patient can update his appointment by change the doctor or the slot.
 ##@app.route("/patient" ,methods=["PUT"])
 #Patient can cancel his appointment.
 ##@app.route("/patient" ,methods=["DELETE"])
-#Patients can view all his reservations.
+#Patients can view all his appointments.
 ##@app.route("/patient",methods=["GET"])
+
 if __name__ =="__main__":
     app.run(debug=True)
