@@ -6,9 +6,14 @@ from bson import ObjectId
 import json
 import subprocess
 
+
 app = Flask(__name__)
 app.secret_key="ToolsProject"
 CORS(app,supports_credentials=True)
+
+app.config['SESSION_COOKIE_SECURE'] = True  # Set to False if not using HTTPS
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+
 
 
 
@@ -69,22 +74,31 @@ def Signin():
         # autheticate user with database
         patients_collection = db.patients
         doctors_collection = db.doctors
+        result= True
         if patients_collection.find_one({"email":email,"password":password}):
-            result = patients_collection.find_one({"email":email,"password":password})
+            patient  = True
         elif doctors_collection.find_one({"email":email,"password":password}):
-            result = doctors_collection.find_one({"email":email,"password":password})
+            patient  = False
         else:
-            result = "Wrong credentials"
+            result = False
             return jsonify({'message': result})
-        return json.loads(json_util.dumps(data))
-    else:
-       return jsonify({'message': 'Invalid data format'}) 
+        return jsonify({'message': result,'patient':patient})
+ 
 
 
 #Doctor set his schedule. (Inserting a slot)
-@app.route("/Doctor/<date>/<time>",methods=["PUT"])
-def insertSlot(date,time):
-    pass
+@app.route("/Doctor/insert/<email>",methods=["POST"])
+def insertSlot(email):
+    data=request.get_json()
+    doctors_collection = db.doctors
+      
+    doctor_id = doctors_collection.find_one({"email":email},{'_id':True})
+    schedule_collection = db.schedules
+    schedule_collection.update_one({'doctorID':doctor_id},{'$set':{'slots':{'slot':{'date':data[date],'time':data[time],'available':True}}}})
+    
+
+    return jsonify({"message":email})
+#edit and cancel
 #Patients select doctor, view his available slots, then patient chooses a slot.
 ##@app.route("/Patient",methods=[])
 #Patient can update his appointment by change the doctor or the slot.

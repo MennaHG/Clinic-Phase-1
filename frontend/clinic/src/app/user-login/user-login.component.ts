@@ -35,7 +35,7 @@ export class UserLoginComponent{
   // let cookie = this.data.email;
   // this.cookieValue.emit(cookie);
   //this.cookieService.set("email",this.data.email);
-  this.router.navigate(["dr"]);
+  //this.router.navigate(["dr"]);
   return this.userService.loginUser(data);
 
   //console.log("user data in login comp",data)

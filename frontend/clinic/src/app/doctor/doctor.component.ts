@@ -9,6 +9,7 @@ import { CookieService } from 'ngx-cookie-service';
 
 let USER_DATA = [
  // {"id":1,"date": new Date().getMonth()+'/'+new Date().getDay()+'/'+new Date().getFullYear(), "hour": new Date().getHours()+':'+new Date().getMinutes()}
+
 ];
 
 const COLUMNS_SCHEMA = [
@@ -40,7 +41,7 @@ export class DoctorComponent {
   email:any;
   columnsSchema: any = COLUMNS_SCHEMA;
   
-  constructor(@Inject(DOCUMENT) private document:Document,service:DoctorService){
+  constructor(private drservice:DoctorService,@Inject(DOCUMENT) private document:Document){
     // How to return email??
     //this.dataSource = service.getSlots(this.email);
   //  this.email = this.cookieservice.get("email");
@@ -50,7 +51,7 @@ export class DoctorComponent {
   ngOnInit(){  
     this.email = sessionStorage.getItem("email"); console.log("DR"+this.email);
   }
-  add(){
+  async add(){
     let dateInput = this.document.getElementById("date") as HTMLInputElement;
     let hourInput = this.document.getElementById("time") as HTMLInputElement;
     let dateval = dateInput.value;
@@ -73,7 +74,9 @@ export class DoctorComponent {
     console.log(rowlen)
     const newRow = {"id": rowlen  ,"date": dateval, "hour": hourval,isEdit: false}
     this.dataSource = [...this.dataSource, newRow];
-
+  //  let newArray =[];
+   // newArray= this.dataSource.map(({ id, ...rest }) => rest);
+    await this.drservice.insertSlot(newRow);
     }
     
     removeRow(id: number) {
