@@ -9,6 +9,12 @@ export class DoctorService {
 
   constructor(private http: HttpClient) { }
   getSlots(email:string){
+    let res;
+    this.http.get(`${API_URL}/Patient/viewSlots/${email}`).subscribe(
+      response => res=response,
+      error => console.log(error)
+    )
+      return res;
     //return [{"id":1,"date": new Date().getMonth()+'/'+new Date().getDay()+'/'+new Date().getFullYear(), "hour": new Date().getHours()+':'+new Date().getMinutes()}];
     //return this.http.get(`${API_URL}/${email}`);
 

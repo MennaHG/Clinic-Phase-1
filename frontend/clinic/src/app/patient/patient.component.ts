@@ -37,6 +37,7 @@ const COLUMNS_SCHEMA = [
   providedIn: 'root'
 })
 
+// WHERES PATIENT APPTS!
 export class PatientComponent {
   displayedColumns: string[];
   dataSource: any;
@@ -50,23 +51,31 @@ export class PatientComponent {
       this.dataSource = [];
       this.email='';
       this.columnsSchema= COLUMNS_SCHEMA;
-      this.doctors = [{name:"DR1"},{name:"DR2"}];
+      this.getDrs();
  
-     this.DrSlots = ["SLOTS","SLOTS2"];
+     this.getSlots;
   }
   parseAppt(){} //parsing dr slots date to date DD/MM/YYYY HH:MM format
   getSlots(){
     let dr= this.document.getElementById("drs") as HTMLSelectElement;
     let drname = dr.value
-    //this.DrSlots = this.patientservice.getSlots(drname);
+ 
+    let res = this.patientservice.getSlots(drname);
+    for(let i=0;i<res.length;i++){
+      let str = res[i].date+res[i].hour;
+      this.dataSource.push(str);
+    }
   }
 
   ngOnInit(){  
     this.email = sessionStorage.getItem("email"); console.log("PATIENT"+this.email);
   }
   getDrs(){
-    
-    //this.doctors = this.patientservice.getDrs();
+    let res = this.patientservice.getDrs();
+    for(let i=0;i<res.length;i++){
+      this.doctors.push({"name":res[i]});
+    }
+    console.log(this.doctors);
   }
   add(){
     let drname= this.document.getElementById("drs") as HTMLInputElement;

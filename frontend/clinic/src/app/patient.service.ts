@@ -12,10 +12,20 @@ export class PatientService {
 
   constructor(private http:HttpClient) { }
   getDrs(){
-    return this.http.get(API_URL);
+    let res;
+    this.http.get(`${API_URL}/Patient/getDoctors`).subscribe(
+      response => res=response,
+      error => console.log(error)
+    )
+    return res;
   }
   getSlots(name:string){
-    return this.http.get(API_URL+'/'+name);
+    let res;
+    this.http.get(`${API_URL}/Patient/viewSlots/${name}`).subscribe(
+      response => res=response,
+      error => console.log(error)
+    )
+    return res;
   }
  
 

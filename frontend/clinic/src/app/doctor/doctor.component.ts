@@ -46,10 +46,20 @@ export class DoctorComponent {
     //this.dataSource = service.getSlots(this.email);
   //  this.email = this.cookieservice.get("email");
     //console.log(this.email)
+
+    this.parse(this.drservice.getSlots(this.email));
+
   }
 
   ngOnInit(){  
     this.email = sessionStorage.getItem("email"); console.log("DR"+this.email);
+  }
+
+  parse(res){
+    for(let i=0;i<res.length;i++){
+      this.dataSource.push({"date":res[i].date,"hour":res[i].hour});
+    }
+    console.log('dataSource(Slots)',this.dataSource);
   }
   async add(){
     let dateInput = this.document.getElementById("date") as HTMLInputElement;
