@@ -58,7 +58,7 @@ def Signup():
             doctors_collection = db.doctors
             new_user = doctors_collection.insert_one(user)
             schedules_collection = db.schedules
-            schedules_collection.insert_one({"doctorID":ObjectId(new_user.inserted_id)})
+            schedules_collection.insert_one({"doctorID":ObjectId(new_user.inserted_id),"slots":{}})
         
         return jsonify({'message': 'Signup successful'})
     else:
@@ -92,9 +92,9 @@ def insertSlot(email):
     data=request.get_json()
     doctors_collection = db.doctors
       
-    doctor_id = doctors_collection.find_one({"email":email},{'_id':True})
+    doctor_id = doctors_collection.find_one({"email":email})
     schedule_collection = db.schedules
-    schedule_collection.update_one({'doctorID':doctor_id},{'$set':{'slots':{'slot':{'date':data[date],'time':data[time],'available':True}}}})
+    schedule_collection.update_one({'doctorID':doctor_id['_id']},{'$set':{'slots':{'slot':{'date':data['date'],'hour':data['hour'],'available':True}}}})
     
 
     return jsonify({"message":email})
