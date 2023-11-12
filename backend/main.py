@@ -119,11 +119,26 @@ def editSlot(email):
     
 
 #cancel
+@app.route("/Doctor/cancel/<email>",methods=["POST"])
+def cancelSlot(email):
+    data = request.get_json()
 
+    doctors_collection = db.doctors
+    doctor = doctors_collection.find_one({"email":email})
+    
+    schedule_collection = db.schedules
+    schedule = schedule_collection.find_one({'doctorID':doctor['_id']})
+    slots = schedule['slots'] 
+    index = next((i for i, slot in enumerate(slots) if slot['date'] == data['oldDate'] and slot['hour'] == data['oldTime']), None)  
+    del slots[index]
+    schedule_collection.update_one({'doctorID':doctor['_id']},{'$set':{'slots':slots}})
+    return jsonify({"message":"slot canceled successfully"})
+    
 
 #Patients select doctor, view his available slots, then patient chooses a slot.
 @app.route("/Patient/getDoctors",methods=["GET"])
 def getDoctors():
+    
 
     doctors_collection = db.doctors
     doctors = doctors_collection.find()
@@ -131,7 +146,7 @@ def getDoctors():
     
     return jsonify(doctors_list)
 
-@app.route("/Patient/viewSlots/<string:email>",methods=["GET"])
+@app.route("/Patient/viewSlots/<email>",methods=["GET"])
 def viewSlots(email):
 
     doctors_collection = db.doctors

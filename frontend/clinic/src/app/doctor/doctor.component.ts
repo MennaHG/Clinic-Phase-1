@@ -37,13 +37,14 @@ const COLUMNS_SCHEMA = [
 export class DoctorComponent {
 
   displayedColumns: string[] = COLUMNS_SCHEMA.map((col) => col.key);
-  dataSource = this.drservice.getSlots(sessionStorage.getItem("email"));
+ // dataSource = this.drservice.getSlots(sessionStorage.getItem("email"));
   email:any; oldDate;newDate; oldTime;newTime;
   columnsSchema: any = COLUMNS_SCHEMA;
+  dataSource: any[];
   
   constructor(private drservice:DoctorService,@Inject(DOCUMENT) private document:Document){
     // How to return email??
-    //this.dataSource = service.getSlots(this.email);
+    this.dataSource = this.drservice.getSlots(this.email);
     //this.email = this.cookieservice.get("email");
     //console.log(this.email)
     this.email = sessionStorage.getItem("email");
