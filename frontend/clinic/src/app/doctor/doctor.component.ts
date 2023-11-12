@@ -37,7 +37,7 @@ const COLUMNS_SCHEMA = [
 export class DoctorComponent {
 
   displayedColumns: string[] = COLUMNS_SCHEMA.map((col) => col.key);
-  dataSource;
+  dataSource = this.drservice.getSlots(sessionStorage.getItem("email"));
   email:any; oldDate;newDate; oldTime;newTime;
   columnsSchema: any = COLUMNS_SCHEMA;
   
@@ -47,7 +47,7 @@ export class DoctorComponent {
     //this.email = this.cookieservice.get("email");
     //console.log(this.email)
     this.email = sessionStorage.getItem("email");
-    this.dataSource= this.drservice.getSlots(this.email);
+    //this.dataSource= this.drservice.getSlots(this.email);
 
   }
 
@@ -91,7 +91,14 @@ export class DoctorComponent {
     }
     
     removeRow(id: number) {
+      let element = this.dataSource[id-1];
+      const data={
+        oldDate: element.date,
+        oldTime:element.hour
+      };
       this.dataSource = this.dataSource.filter((u: { id: number; }) => u.id !== id);
+      return this.drservice.cancelSlot(data);
+
     }
 
     edit(id:number){

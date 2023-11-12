@@ -57,4 +57,13 @@ export class DoctorService {
       error => console.error(error)
     );
   }
+
+  cancelSlot(data:{"oldDate":string,"oldTime":string}){
+    let email = sessionStorage.getItem("email");
+
+    return this.http.post(`${API_URL}/Doctor/cancel/${email}`,data).subscribe(
+      response => console.log(response),
+      error => console.error(error)
+    );
+  }
 }

@@ -11,7 +11,7 @@
 </div>
 
 <h2>Slots</h2>
-<table  mat-table [dataSource]="dataSource" >
+<table mat-table [dataSource]="dataSource" >
     <ng-container [matColumnDef]="col.key" *ngFor="let col of columnsSchema">
       <th mat-header-cell *matHeaderCellDef>
         {{ col.label }}
