@@ -42,12 +42,12 @@ export class DoctorComponent {
   columnsSchema: any = COLUMNS_SCHEMA;
   dataSource: any[];
   
-  constructor(private drservice:DoctorService,@Inject(DOCUMENT) private document:Document){
-    // How to return email??
+  constructor(public drservice:DoctorService,@Inject(DOCUMENT) private document:Document){
+    this.email = sessionStorage.getItem("email");
+
     this.dataSource = this.drservice.getSlots(this.email);
     //this.email = this.cookieservice.get("email");
     //console.log(this.email)
-    this.email = sessionStorage.getItem("email");
     //this.dataSource= this.drservice.getSlots(this.email);
 
   }

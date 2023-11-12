@@ -21,17 +21,33 @@ export class PatientService {
 
   constructor(private http:HttpClient) { }
   getDrs(){
-    let res;
-    this.http.get(`${API_URL}/Patient/getDoctors`).subscribe(
-      response => res=response,
+    let res:{ name: string; }[];
+    this.http.get(`${API_URL}/Patient/getDoctors`).subscribe( 
+      (response:string[]) => response.forEach(element => res.push({name:String(element)})),
       error => console.log(error)
     )
     return res;
   }
-  getSlots(name:string){
-    let drservice: DoctorService;
-    let res= drservice.getSlots(name);
-    return res;
+  getSlots(email:string){
+    let data=[]; let i=1;
+    console.log(email)
+    fetch(`${API_URL}/Patient/viewSlots/${email}`)
+    .then(response => response.json())
+    .then((slots: TimeSlot[]) => {
+        // Access date and hour values
+        slots.forEach(slot => {
+            //for (const key in slot) {
+                //if (slot.hasOwnProperty(key)) {
+                    const { date, hour } = slot; data.push({"id": i,"date":date,"hour":hour})
+                    i++;
+                    //console.log(`Slot ${key}: Date - ${date}, Hour - ${hour}`);
+                    console.log(slot.date,slot.hour);
+                //}
+            //}
+        });
+    })
+    console.log(data);
+    return data;
   }
   getAppts(){
     let data=[]; let i=1; let email = sessionStorage.getItem("email");

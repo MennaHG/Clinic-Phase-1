@@ -37,41 +37,42 @@ const COLUMNS_SCHEMA = [
   providedIn: 'root'
 })
 
-// WHERES PATIENT APPTS!
+
 export class PatientComponent {
   displayedColumns: string[];
   dataSource:any;
   email:any;
   columnsSchema: any ;
-  DrSlots:string[] ; oldDr;newDr; oldTime;newTime;
-  public doctors: { name: string; }[];
+  DrSlots:string[] =[]; oldDr;newDr; oldTime;newTime;
+  public doctors: { name: string; }[]=[];
   
   constructor(private patientservice: PatientService,@Inject(DOCUMENT) private document:Document){
       this.displayedColumns = COLUMNS_SCHEMA.map((col) => col.key);
-      this.dataSource = [];
-      //this.dataSource=this.getAppts();
+      this.dataSource = [];   //DATASOURCE = APPTS RESERVATIONS
+      this.dataSource=this.getAppts();
     
       this.email=sessionStorage.getItem("email");
       this.columnsSchema= COLUMNS_SCHEMA;
-      //this.getDrs(); 
-      this.doctors=[] 
-
-     this.getSlots();  
+      this.getDrs(); 
+      this.DrSlots=[]
+     //this.getSlots();  
   }
   
   getAppts(){
                  
     return this.patientservice.getAppts();  
-   
+   //return [{"id":1,"Appointment":"appt","Doctor":"drname"}];
   } 
   getSlots(){
     let dr= this.document.getElementById("drs") as HTMLSelectElement;
-    let drname = dr.value
+    let drname = dr.value;    //!!!CHANGE HERE
  
     let res = this.patientservice.getSlots(drname);
     for(let i=0;i<res.length;i++){
       let str = res[i].date+' '+res[i].hour;
-      this.dataSource.push(str);
+      console.log(str);
+      //this.dataSource.push({"Appointment":str});
+      this.DrSlots.push(str);
     }
   }
 
@@ -85,17 +86,7 @@ export class PatientComponent {
     }
     console.log(this.doctors);
     */
-    this.patientservice.getDrs().subscribe(
-      (res) => {
-        for (let i = 0; i < res.length; i++) {
-          this.doctors.push({ "name": res[i] });
-        }
-        console.log(this.doctors);
-      },
-      (error) => {
-        console.error("Error fetching doctors:", error);
-      }
-    );
+    this.doctors = this.patientservice.getDrs();
     
   }
   add(){
