@@ -40,7 +40,7 @@ const COLUMNS_SCHEMA = [
 // WHERES PATIENT APPTS!
 export class PatientComponent {
   displayedColumns: string[];
-  dataSource:any=this.getAppts();
+  dataSource:any;
   email:any;
   columnsSchema: any ;
   DrSlots:string[] ; oldDr;newDr; oldTime;newTime;
@@ -48,18 +48,21 @@ export class PatientComponent {
   
   constructor(private patientservice: PatientService,@Inject(DOCUMENT) private document:Document){
       this.displayedColumns = COLUMNS_SCHEMA.map((col) => col.key);
-      //this.dataSource = [];
+      this.dataSource = [];
+      //this.dataSource=this.getAppts();
+    
       this.email=sessionStorage.getItem("email");
       this.columnsSchema= COLUMNS_SCHEMA;
-      //this.getDrs();  UNCOMMENT HERE
+      //this.getDrs(); 
+      this.doctors=[] 
 
-     //this.getSlots();  UNCOMMENT HERE
+     this.getSlots();  
   }
   
   getAppts(){
-    let list = [{"id":1,"Appointment":"20-11-2020 20:00","Doctor":"DRNAME"}];              // AND COMMENT THIS
-    //this.patientservice.getAppts(this.email);  UNCOMMENT HERE
-    return list;
+                 
+    return this.patientservice.getAppts();  
+   
   } 
   getSlots(){
     let dr= this.document.getElementById("drs") as HTMLSelectElement;
@@ -76,11 +79,24 @@ export class PatientComponent {
     this.email = sessionStorage.getItem("email"); console.log("PATIENT"+this.email);
   }
   getDrs(){
-    let res = this.patientservice.getDrs();
+   /* let res = this.patientservice.getDrs();
     for(let i=0;i<res.length;i++){
       this.doctors.push({"name":res[i]});
     }
     console.log(this.doctors);
+    */
+    this.patientservice.getDrs().subscribe(
+      (res) => {
+        for (let i = 0; i < res.length; i++) {
+          this.doctors.push({ "name": res[i] });
+        }
+        console.log(this.doctors);
+      },
+      (error) => {
+        console.error("Error fetching doctors:", error);
+      }
+    );
+    
   }
   add(){
     let drname= this.document.getElementById("drs") as HTMLInputElement;

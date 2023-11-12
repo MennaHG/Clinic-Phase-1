@@ -5,9 +5,17 @@ import { Observable } from 'rxjs';
 import { DoctorService } from './doctor.service';
 
 import { API_URL } from './env';
+interface TimeSlot {
+   
+  doctor:string;
+  date: string;
+  hour: string;
+
+}
 @Injectable({
   providedIn: 'root'
 })
+
 export class PatientService {
 
 
@@ -25,14 +33,36 @@ export class PatientService {
     let res= drservice.getSlots(name);
     return res;
   }
+  getAppts(){
+    let data=[]; let i=1; let email = sessionStorage.getItem("email");
+    console.log(email)
+    fetch(`${API_URL}/Patient/viewAppts/${email}`)
+    .then(response => response.json())
+    .then((slots: TimeSlot[]) => {
+        // Access date and hour values
+        slots.forEach(slot => {
+            //for (const key in slot) {
+                //if (slot.hasOwnProperty(key)) {
+                    const { date, hour,doctor } = slot; 
+                    data.push({"id": i,"Appointment":date+' '+hour,"Doctor":doctor});
+                    i++;
+                    //console.log(`Slot ${key}: Date - ${date}, Hour - ${hour}`);
+                    console.log(slot.date,slot.hour,slot.doctor);
+                //}
+            //}
+        });
+    })
+    console.log(data);
+    return data;
+  }
 
   addAppt(data: { Doctor: string; Appointment: string; }) {
     let email = sessionStorage.getItem("email");
 
-    // return this.http.post(`${API_URL}/Doctor/edit/${email}`,data).subscribe(
-    //   response => console.log(response),
-    //   error => console.error(error)
-    // );
+     return this.http.post(`${API_URL}/Doctor/edit/${email}`,data).subscribe(
+      response => console.log(response),
+      error => console.error(error)
+     );
 
   }
   editAppt(data:{"oldDr":string,"newDr":string,"oldTime":string,"newTime":string}){

@@ -53,7 +53,10 @@ def Signup():
         # todo make sure it doesn't alreasy exist
         if(type == 1):
             patients_collection = db.patients
-            patients_collection.insert_one(user)
+            new_user=patients_collection.insert_one(user)
+            appointments_collection =db.appointments
+            appointments_collection.insert_one({"patientID":ObjectId(new_user.inserted_id),"slots":[]})
+            
         else:
             doctors_collection = db.doctors
             new_user = doctors_collection.insert_one(user)
@@ -157,13 +160,85 @@ def viewSlots(email):
     
     return jsonify(slots_lits)
 
+#patient chooses a slot. ->add appoinment
+@app.route("/Patient/choose/<email>",methods=["POST"])
+def chooseSlot(email):
+    data =request.get_json()
+    date,time= data['Appointment'].split(" ")
+    
+    patients_collection=db.patients
+    patient_id = patients_collection.find_one({"email":email})
+    
+    appoinments_collection=db.appointments
+    appoinments_id = appoinments_collection.find_one({'patientID':patient_id['_id']})
+    
+    appoinments_collection.update_one({'patientID':patient_id['_id']},{'$push':{'slots':{'date':date,'hour':time,'dremail':data['Doctor']}}})
+
+    return jsonify({"message":"appoinment added successfully"})
+    
+    
+    
+    
+    
 #Patient can update his appointment by change the doctor or the slot.
-##@app.route("/patient" ,methods=["PUT"])
+@app.route("/Patient/update/<email>" ,methods=["POST"])
+def updateApp(email):
+    data =request.get_json()
+    new_date,new_time= data['newTime'].split(" ")
+    old_date,old_time= data['oldTime'].split(" ")
+    
+    patients_collection=db.patients
+    patient_id = patients_collection.find_one({"email":email})
+    
+    appoinments_collection=db.appointments
+    appoinments= appoinments_collection.find_one({'patientID':patient_id['_id']})
+    
+    slots = appoinments['slots']
+    for i in range(len(slots)):
+        if slots[i]['date'] == old_date and slots[i]['hour'] == old_time and slots[i]['dremail']==data['oldDr']:
+            slots[i]['date'] = new_date
+            slots[i]['hour'] = new_time
+            slots[i]['dremail'] = data['newDr']
+            break
+    appoinments_collection.update_one({'patientID':patient_id['_id']},{'$set':{'slots':slots}})
+    return jsonify({"message":"appoinment edited successfully"})
+    
+
 
 #Patient can cancel his appointment.
-##@app.route("/patient" ,methods=["DELETE"])
+@app.route("/Patient/cancel/<email>" ,methods=["POST"])
+def cancelApp(email):
+    data =request.get_json()
+    old_date ,old_time = data['oldTime'].split(' ')
+    
+    patients_collection=db.patients
+    patient_id = patients_collection.find_one({"email":email})
+    
+    appoinments_collection=db.appointments
+    appoinments= appoinments_collection.find_one({'patientID':patient_id['_id']})
+    
+    slots = appoinments['slots'] 
+    index = next((i for i, slot in enumerate(slots) if slot['date'] == old_date and slot['hour'] == old_time and slot['dremail']== data['oldDr']), None)  
+    del slots[index]
+    appoinments_collection.update_one({'patientID':patient_id['_id']},{'$set':{'slots':slots}})
+    return jsonify({"message":"appoinment  canceled successfully"})
+    
+    
+    
+    
+
 #Patients can view all his appointments.
-##@app.route("/patient",methods=["GET"])
+@app.route("/Patient/viewApp/<email>",methods=["GET"])
+def viewApp(email):
+   patients_collection=db.patients
+   patient_id = patients_collection.find_one({"email":email})
+   
+   appoinments_collection=db.appointments
+   appoinments= appoinments_collection.find_one({'patientID':patient_id['_id']}) 
+   
+   appt_list=appoinments['slots']
+   
+   return jsonify(appt_list)    
 
 if __name__ =="__main__":
     app.run(debug=True)
