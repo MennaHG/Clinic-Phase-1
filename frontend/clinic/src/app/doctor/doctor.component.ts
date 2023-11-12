@@ -37,22 +37,23 @@ const COLUMNS_SCHEMA = [
 export class DoctorComponent {
 
   displayedColumns: string[] = COLUMNS_SCHEMA.map((col) => col.key);
-  dataSource: any=[];
-  email:any;
+  dataSource;
+  email:any; oldDate;newDate; oldTime;newTime;
   columnsSchema: any = COLUMNS_SCHEMA;
   
   constructor(private drservice:DoctorService,@Inject(DOCUMENT) private document:Document){
     // How to return email??
     //this.dataSource = service.getSlots(this.email);
-  //  this.email = this.cookieservice.get("email");
+    //this.email = this.cookieservice.get("email");
     //console.log(this.email)
-
-    this.parse(this.drservice.getSlots(this.email));
+    this.email = sessionStorage.getItem("email");
+    this.dataSource= this.drservice.getSlots(this.email);
 
   }
 
   ngOnInit(){  
     this.email = sessionStorage.getItem("email"); console.log("DR"+this.email);
+    this.dataSource= this.drservice.getSlots(this.email);
   }
 
   parse(res){
@@ -91,5 +92,26 @@ export class DoctorComponent {
     
     removeRow(id: number) {
       this.dataSource = this.dataSource.filter((u: { id: number; }) => u.id !== id);
+    }
+
+    edit(id:number){
+      let element =this.dataSource[id-1];
+      element.isEdit = !element.isEdit;
+       this.oldDate= element.date; this.oldTime = element.hour;
+    }
+
+    done(id:number){
+      let element =this.dataSource[id-1];
+      element.isEdit = !element.isEdit;
+      this.newDate= element.date; this.newTime = element.hour;
+      console.log(this.oldDate,this.newDate,this.oldTime,this.newTime);
+      const data={
+        newDate:this.newDate,
+        oldDate:this.oldDate,
+        newTime: this.newTime,
+        oldTime:this.oldTime
+      };
+      return this.drservice.editSlot(data);
+
     }
 }

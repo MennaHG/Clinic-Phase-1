@@ -58,7 +58,7 @@ def Signup():
             doctors_collection = db.doctors
             new_user = doctors_collection.insert_one(user)
             schedules_collection = db.schedules
-            schedules_collection.insert_one({"doctorID":ObjectId(new_user.inserted_id),"slotNum":0,"slots":[]})
+            schedules_collection.insert_one({"doctorID":ObjectId(new_user.inserted_id),"slots":[]})
         
         return jsonify({'message': 'Signup successful'})
     else:
@@ -95,14 +95,31 @@ def insertSlot(email):
     doctor_id = doctors_collection.find_one({"email":email})
     schedule_collection = db.schedules
     schedule_id = schedule_collection.find_one({'doctorID':doctor_id['_id']})
-    count = schedule_id['slotNum'] + 1 
-    new_slot = "slot"+str(count)
-    schedule_collection.update_one({'doctorID':doctor_id['_id']},{'$set':{'slotNum':count}})
-    schedule_collection.update_one({'doctorID':doctor_id['_id']},{'$push':{'slots':{new_slot:{'date':data['date'],'hour':data['hour'],'available':True}}}})
+    schedule_collection.update_one({'doctorID':doctor_id['_id']},{'$push':{'slots':{'date':data['date'],'hour':data['hour'],'available':True}}})
 
     return jsonify({"message":"slot added successfully"})
 
-#edit and cancel
+@app.route("/Doctor/edit/<email>",methods=["POST"])
+def editSlot(email):
+    data = request.get_json()
+
+    doctors_collection = db.doctors
+    doctor = doctors_collection.find_one({"email":email})
+    
+    schedule_collection = db.schedules
+    schedule = schedule_collection.find_one({'doctorID':doctor['_id']})
+    slots = schedule['slots']
+    for i in range(len(slots)):
+        if slots[i]['date'] == data['oldDate'] and slots[i]['hour'] == data['oldTime']:
+            slots[i]['date'] = data['newDate']
+            slots[i]['hour'] = data['newTime']
+            break
+    schedule_collection.update_one({'doctorID':doctor['_id']},{'$set':{'slots':slots}})
+    return jsonify({"message":"slot edited successfully"}) 
+    
+
+#cancel
+
 
 #Patients select doctor, view his available slots, then patient chooses a slot.
 @app.route("/Patient/getDoctors",methods=["GET"])
@@ -114,7 +131,7 @@ def getDoctors():
     
     return jsonify(doctors_list)
 
-@app.route("/Patient/viewSlots/<email>",methods=["GET"])
+@app.route("/Patient/viewSlots/<string:email>",methods=["GET"])
 def viewSlots(email):
 
     doctors_collection = db.doctors
@@ -127,6 +144,7 @@ def viewSlots(email):
 
 #Patient can update his appointment by change the doctor or the slot.
 ##@app.route("/patient" ,methods=["PUT"])
+
 #Patient can cancel his appointment.
 ##@app.route("/patient" ,methods=["DELETE"])
 #Patients can view all his appointments.
