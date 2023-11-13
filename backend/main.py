@@ -8,6 +8,7 @@ import subprocess
 from kafka import KafkaProducer, KafkaConsumer
 
 
+
 app = Flask(__name__)
 app.secret_key="ToolsProject"
 CORS(app,supports_credentials=True)
@@ -15,8 +16,8 @@ CORS(app,supports_credentials=True)
 app.config['SESSION_COOKIE_SECURE'] = True  # Set to False if not using HTTPS
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 
-kafka_bootstrap_servers = 'kafka1:9092'
-kafka_topic = 'clinic_reservation'
+kafka_bootstrap_servers = 'localhost:9092'
+kafka_topic = 'clinic'
 
 #producer setup
 producer = KafkaProducer(bootstrap_servers=kafka_bootstrap_servers, value_serializer=lambda v: str(v).encode('utf-8'))
@@ -239,7 +240,7 @@ def updateApp(email):
     appoinments_collection.update_one({'patientID':patient_id['_id']},{'$set':{'slots':slots}})
     
     event_data = {
-        'doctorEmail': data['Doctor'],
+        'doctorEmail': data['newDr'],
         'patientEmail': email,
         'Operation':'ReservationUpdated'
     }
@@ -268,7 +269,7 @@ def cancelApp(email):
     del slots[index]
     appoinments_collection.update_one({'patientID':patient_id['_id']},{'$set':{'slots':slots}})
     event_data = {
-        'doctorEmail': data['Doctor'],
+        'doctorEmail': data['oldDr'],
         'patientEmail': email,
         'Operation':'ReservationCanceled'
     }
@@ -276,15 +277,19 @@ def cancelApp(email):
     return jsonify({"message":"appoinment  canceled successfully"})
     
 #Consume an event
-@app.route('/consumeEvents')
+@app.route("/consumeEvents",methods=["GET"])
 def consume_events():
     events = []
+    messages = consumer.poll()
+    for message in messages.values():
+        message_value = message.value
+        events.append(message_value)
+        
+    
+        
 
-    # Consume events from Kafka topic
-    for message in consumer:
-        events.append(message.value)
-
-    return events
+   
+    return jsonify(events)
     
     
 
