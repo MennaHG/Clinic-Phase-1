@@ -72,14 +72,14 @@ export class DoctorComponent {
     let mins = (curDate.getMinutes()).toString();
     let hrs = (curDate.getHours()).toString();
 
-    if(hourval == "")
-      if(curDate.getMinutes() < 10)
-        mins = ("0"+ mins);
-      if(curDate.getHours()<10)
-        hrs = "0"+hrs
-      hourval=hrs+':'+mins;
-    if(dateval == "")
-      dateval=curDate.getFullYear()+'-'+curDate.getMonth()+'-'+curDate.getDay();
+    // if(hourval == "")
+    //   if(curDate.getMinutes() < 10)
+    //     mins = ("0"+ mins);
+    //   if(curDate.getHours()<10)
+    //     hrs = "0"+hrs
+    //   hourval=hrs+':'+mins;
+    // if(dateval == "")
+    //   dateval=curDate.getFullYear()+'-'+curDate.getMonth()+'-'+curDate.getDay();
     
     // minus 2 bc tr for last table not included
     let rowlen = this.document.getElementsByTagName("tr").length -2;
