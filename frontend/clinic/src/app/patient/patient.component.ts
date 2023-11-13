@@ -67,13 +67,17 @@ export class PatientComponent {
     let dr= this.document.getElementById("drs") as HTMLSelectElement;
     let drname = dr.value;    //!!!CHANGE HERE
  
-    let res = this.patientservice.getSlots(drname);
+    this.DrSlots = this.patientservice.getSlots(drname);
+    /*
     for(let i=0;i<res.length;i++){
       let str = res[i].date+' '+res[i].hour;
+      this.DrSlots.push(str.toString());
       console.log(str);
       //this.dataSource.push({"Appointment":str});
-      this.DrSlots.push(str);
+      
     }
+    */
+
   }
 
   ngOnInit(){  

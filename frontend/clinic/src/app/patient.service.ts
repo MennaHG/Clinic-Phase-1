@@ -21,9 +21,9 @@ export class PatientService {
 
   constructor(private http:HttpClient) { }
   getDrs(){
-    let res:{ name: string; }[];
+    let res:{ name: string; }[] = [];
     this.http.get(`${API_URL}/Patient/getDoctors`).subscribe( 
-      (response:string[]) => response.forEach(element => res.push({name:String(element)})),
+      (response:string[]) => response.forEach(element => res.push({"name":String(element)})),
       error => console.log(error)
     )
     return res;
@@ -38,7 +38,7 @@ export class PatientService {
         slots.forEach(slot => {
             //for (const key in slot) {
                 //if (slot.hasOwnProperty(key)) {
-                    const { date, hour } = slot; data.push({"id": i,"date":date,"hour":hour})
+                  const { date, hour } = slot; data.push(slot.date+" "+slot.hour);
                     i++;
                     //console.log(`Slot ${key}: Date - ${date}, Hour - ${hour}`);
                     console.log(slot.date,slot.hour);
@@ -75,23 +75,26 @@ export class PatientService {
   addAppt(data: { Doctor: string; Appointment: string; }) {
     let email = sessionStorage.getItem("email");
 
-     return this.http.post(`${API_URL}/Doctor/edit/${email}`,data).subscribe(
+     return this.http.post(`${API_URL}/Patient/choose/${email}`,data).subscribe(
       response => console.log(response),
       error => console.error(error)
      );
 
   }
   editAppt(data:{"oldDr":string,"newDr":string,"oldTime":string,"newTime":string}){
-    let email = sessionStorage.getItem("email");
-
-    // return this.http.post(`${API_URL}/Doctor/edit/${email}`,data).subscribe(
-    //   response => console.log(response),
-    //   error => console.error(error)
-    // );
+    let email =( sessionStorage.getItem("email");
+    console.log(data)
+      return this.http.post(`${API_URL}/Patient/update/${email}`,data).subscribe(
+      response => console.log(response),
+      error => console.error(error)
+     );
   }
 
   cancelAppt(data: { "oldDr": string; "oldTime": string; }) {
     let email = sessionStorage.getItem("email");
-    //return this.http.
+      return this.http.post(`${API_URL}/Patient/cancel/${email}`,data).subscribe(
+      response => console.log(response),
+      error => console.error(error)
+     );
   }
 }
