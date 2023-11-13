@@ -137,5 +137,19 @@ export class PatientComponent {
     return this.patientservice.cancelAppt(data);
   }
 
+  getSlotsMat() {
+    let dr= this.document.getElementById("drname") as HTMLSelectElement;
+    let drname = dr.value; 
+    let res = this.patientservice.getSlots(drname);
+    for(let i=0;i<res.length;i++){
+      let str = res[i].date+' '+res[i].hour;
+      console.log(str);
+      //this.dataSource.push({"Appointment":str});
+      this.DrSlots.push(str.toString());
+    }
+
+
+  }
+
 
 }

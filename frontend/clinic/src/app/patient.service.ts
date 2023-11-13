@@ -82,7 +82,7 @@ export class PatientService {
 
   }
   editAppt(data:{"oldDr":string,"newDr":string,"oldTime":string,"newTime":string}){
-    let email =( sessionStorage.getItem("email");
+    let email =( sessionStorage.getItem("email"));
     console.log(data)
       return this.http.post(`${API_URL}/Patient/update/${email}`,data).subscribe(
       response => console.log(response),

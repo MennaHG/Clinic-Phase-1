@@ -5,6 +5,7 @@ from bson import json_util
 from bson import ObjectId
 import json
 import subprocess
+from kafka import KafkaProducer, KafkaConsumer
 
 
 app = Flask(__name__)
@@ -13,6 +14,20 @@ CORS(app,supports_credentials=True)
 
 app.config['SESSION_COOKIE_SECURE'] = True  # Set to False if not using HTTPS
 app.config['SESSION_COOKIE_HTTPONLY'] = True
+
+kafka_bootstrap_servers = 'kafka1:9092'
+kafka_topic = 'clinic_reservation'
+
+#producer setup
+producer = KafkaProducer(bootstrap_servers=kafka_bootstrap_servers, value_serializer=lambda v: str(v).encode('utf-8'))
+
+#consumer setup
+consumer = KafkaConsumer(kafka_topic, bootstrap_servers=kafka_bootstrap_servers,
+                         group_id='reservation_consumer_group',  
+                         auto_offset_reset='earliest',
+                         value_deserializer=lambda x: eval(x.decode('utf-8')))
+ 
+
 
 
 
@@ -53,15 +68,23 @@ def Signup():
         # todo make sure it doesn't alreasy exist
         if(type == 1):
             patients_collection = db.patients
-            new_user=patients_collection.insert_one(user)
-            appointments_collection =db.appointments
-            appointments_collection.insert_one({"patientID":ObjectId(new_user.inserted_id),"slots":[]})
+            
+            if patients_collection.find_one({"email":email}):
+                return jsonify({'message':'user already exists'})
+            else:
+                
+                new_user=patients_collection.insert_one(user)
+                appointments_collection =db.appointments
+                appointments_collection.insert_one({"patientID":ObjectId(new_user.inserted_id),"slots":[]})
             
         else:
             doctors_collection = db.doctors
-            new_user = doctors_collection.insert_one(user)
-            schedules_collection = db.schedules
-            schedules_collection.insert_one({"doctorID":ObjectId(new_user.inserted_id),"slots":[]})
+            if doctors_collection.find_one({"email":email}):
+                return jsonify({'message':'user already exists'})
+            else:
+                new_user = doctors_collection.insert_one(user)
+                schedules_collection = db.schedules
+                schedules_collection.insert_one({"doctorID":ObjectId(new_user.inserted_id),"slots":[]})
         
         return jsonify({'message': 'Signup successful'})
     else:
@@ -161,6 +184,7 @@ def viewSlots(email):
     return jsonify(slots_lits)
 
 #patient chooses a slot. ->add appoinment
+#change availability of slot in the doctors schedule
 @app.route("/Patient/choose/<email>",methods=["POST"])
 def chooseSlot(email):
     data =request.get_json()
@@ -169,11 +193,21 @@ def chooseSlot(email):
     patients_collection=db.patients
     patient_id = patients_collection.find_one({"email":email})
     
+
+    
     appoinments_collection=db.appointments
     appoinments_id = appoinments_collection.find_one({'patientID':patient_id['_id']})
     
     appoinments_collection.update_one({'patientID':patient_id['_id']},{'$push':{'slots':{'date':date,'hour':time,'dremail':data['Doctor']}}})
 
+
+    event_data = {
+        'doctorEmail': data['Doctor'],
+        'patientEmail': email,
+        'Operation':'ReservationCreated'
+    }
+    
+    producer.send(kafka_topic, value=event_data)
     return jsonify({"message":"appoinment added successfully"})
     
     
@@ -190,6 +224,8 @@ def updateApp(email):
     patients_collection=db.patients
     patient_id = patients_collection.find_one({"email":email})
     
+
+    
     appoinments_collection=db.appointments
     appoinments= appoinments_collection.find_one({'patientID':patient_id['_id']})
     
@@ -201,6 +237,14 @@ def updateApp(email):
             slots[i]['dremail'] = data['newDr']
             break
     appoinments_collection.update_one({'patientID':patient_id['_id']},{'$set':{'slots':slots}})
+    
+    event_data = {
+        'doctorEmail': data['Doctor'],
+        'patientEmail': email,
+        'Operation':'ReservationUpdated'
+    }
+    
+    producer.send(kafka_topic, value=event_data)
     return jsonify({"message":"appoinment edited successfully"})
     
 
@@ -214,6 +258,8 @@ def cancelApp(email):
     patients_collection=db.patients
     patient_id = patients_collection.find_one({"email":email})
     
+    
+    
     appoinments_collection=db.appointments
     appoinments= appoinments_collection.find_one({'patientID':patient_id['_id']})
     
@@ -221,9 +267,24 @@ def cancelApp(email):
     index = next((i for i, slot in enumerate(slots) if slot['date'] == old_date and slot['hour'] == old_time and slot['dremail']== data['oldDr']), None)  
     del slots[index]
     appoinments_collection.update_one({'patientID':patient_id['_id']},{'$set':{'slots':slots}})
+    event_data = {
+        'doctorEmail': data['Doctor'],
+        'patientEmail': email,
+        'Operation':'ReservationCanceled'
+    }
+    producer.send(kafka_topic, value=event_data)
     return jsonify({"message":"appoinment  canceled successfully"})
     
-    
+#Consume an event
+@app.route('/consumeEvents')
+def consume_events():
+    events = []
+
+    # Consume events from Kafka topic
+    for message in consumer:
+        events.append(message.value)
+
+    return events
     
     
 

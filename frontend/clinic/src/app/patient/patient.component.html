@@ -49,7 +49,7 @@
             </mat-select>
             </mat-form-field>
             <mat-form-field *ngSwitchCase="'Doctor'" >
-            <mat-select [(value)]="element[col.key]">
+            <mat-select [(value)]="element[col.key]" id="drname" (valueChange)="getSlotsMat()" >
               <mat-option  *ngFor="let dr of doctors" [value]="dr.name" >{{dr.name}}</mat-option>
             </mat-select>
           </mat-form-field>
