@@ -38,7 +38,7 @@ const COLUMNS_SCHEMA = [
 })
 
 
-export class PatientComponent {
+export class PatientComponent implements OnInit{
   displayedColumns: string[];
   dataSource:any;
   email:any;
@@ -49,7 +49,7 @@ export class PatientComponent {
   constructor(private patientservice: PatientService,@Inject(DOCUMENT) private document:Document){
       this.displayedColumns = COLUMNS_SCHEMA.map((col) => col.key);
       this.dataSource = [];   //DATASOURCE = APPTS RESERVATIONS
-      this.dataSource=this.getAppts();
+    //  this.dataSource=this.getAppts();
     
       this.email=sessionStorage.getItem("email");
       this.columnsSchema= COLUMNS_SCHEMA;
@@ -58,11 +58,17 @@ export class PatientComponent {
      //this.getSlots();  
   }
   
+  ngOnInit(){  
+    this.email = sessionStorage.getItem("email"); console.log("PATIENT"+this.email);
+    this.patientservice.getAppts().then(data => {this.dataSource = data})
+                .catch(error => console.log(error));
+  }  
   getAppts(){
                  
     return this.patientservice.getAppts();  
    //return [{"id":1,"Appointment":"appt","Doctor":"drname"}];
   } 
+  
   getSlots(){
     let dr= this.document.getElementById("drs") as HTMLSelectElement;
     let drname = dr.value;    //!!!CHANGE HERE
@@ -80,9 +86,7 @@ export class PatientComponent {
 
   }
 
-  ngOnInit(){  
-    this.email = sessionStorage.getItem("email"); console.log("PATIENT"+this.email);
-  }
+  
   getDrs(){
    /* let res = this.patientservice.getDrs();
     for(let i=0;i<res.length;i++){
@@ -93,6 +97,12 @@ export class PatientComponent {
     this.doctors = this.patientservice.getDrs();
     
   }
+
+  onDoctorSelectionChange(drname: string) {
+    console.log(name);
+    this.getSlotsMat(drname);
+  }
+  
   add(){
     let drname= this.document.getElementById("drs") as HTMLInputElement;
     let appt= this.document.getElementById("appts") as HTMLSelectElement;
@@ -137,9 +147,7 @@ export class PatientComponent {
     return this.patientservice.cancelAppt(data);
   }
 
-  getSlotsMat() {
-    let dr= this.document.getElementById("drname") as HTMLSelectElement;
-    let drname = dr.value; 
+  getSlotsMat(drname) {
     let res = this.patientservice.getSlots(drname);
     for(let i=0;i<res.length;i++){
       let str = res[i].date+' '+res[i].hour;

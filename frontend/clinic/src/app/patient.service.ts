@@ -49,21 +49,58 @@ export class PatientService {
     console.log(data);
     return data;
   }
-  getAppts(){
+
+
+  getAppts() {
+    let data = [];
+    let i = 1;
+    let email = sessionStorage.getItem("email");
+    console.log(email);
+  
+    const url = `${API_URL}/Patient/viewAppts/${email}`;
+  
+    // Use Angular's HttpClient for making HTTP requests
+    return this.http.get(url)
+      .toPromise()
+      .then((slots: TimeSlot[]) => {
+        // Access date and hour values
+        slots.forEach(slot => {
+          let { date, hour, doctor } = slot;
+          data.push({"id": i, "Appointment": String(date + ' ' + hour), "Doctor": doctor});
+  
+          console.log(slot.date, slot.hour, slot.doctor);
+          console.log(`element ${i} in data list`, data[i - 1]);
+          i++;
+        });
+  
+        console.log(data);
+  
+        return data; // Return the data inside the promise chain
+      })
+      .catch(error => {
+        console.error("Error fetching data:", error);
+        throw error; // Re-throw the error to propagate it to the calling code
+      });
+  }
+  
+/*  getAppts(){
     let data=[]; let i=1; let email = sessionStorage.getItem("email");
     console.log(email)
     fetch(`${API_URL}/Patient/viewAppts/${email}`)
     .then(response => response.json())
     .then((slots: TimeSlot[]) => {
-        // Access date and hour values
+  
+      // Access date and hour values
         slots.forEach(slot => {
             //for (const key in slot) {
                 //if (slot.hasOwnProperty(key)) {
-                    const { date, hour,doctor } = slot; 
-                    data.push({"id": i,"Appointment":date+' '+hour,"Doctor":doctor});
-                    i++;
+                    let { date, hour,doctor } = slot; 
+                    data.push({"id": i,"Appointment":String(date+' '+hour),"Doctor":doctor});
+                    
                     //console.log(`Slot ${key}: Date - ${date}, Hour - ${hour}`);
                     console.log(slot.date,slot.hour,slot.doctor);
+                    console.log(`element ${i} in data list` ,data[i-1]);
+                    i++;
                 //}
             //}
         });
@@ -71,7 +108,7 @@ export class PatientService {
     console.log(data);
     return data;
   }
-
+*/
   addAppt(data: { Doctor: string; Appointment: string; }) {
     let email = sessionStorage.getItem("email");
 

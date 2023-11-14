@@ -11,6 +11,7 @@
 </div>
 
 <h2>Slots</h2>
+<div *ngIf="dataSource">
 <table mat-table ng-init="dataSource = drservice.getSlots(email)" [dataSource]="dataSource" >
     <ng-container [matColumnDef]="col.key" *ngFor="let col of columnsSchema">
       <th mat-header-cell *matHeaderCellDef>
@@ -53,6 +54,7 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
+</div>
 <h2>Add new Slot</h2>
 <table border="1" id="slot">
     <tr><th>Date</th> <td><input type="date" id="date" name="date" value="" min="new Date()" /></td></tr>

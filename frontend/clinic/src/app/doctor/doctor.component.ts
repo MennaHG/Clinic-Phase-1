@@ -34,7 +34,7 @@ const COLUMNS_SCHEMA = [
   templateUrl: './doctor.component.html',
   styleUrls: ['./doctor.component.css']
 })
-export class DoctorComponent {
+export class DoctorComponent implements OnInit{
 
   displayedColumns: string[] = COLUMNS_SCHEMA.map((col) => col.key);
  // dataSource = this.drservice.getSlots(sessionStorage.getItem("email"));
@@ -45,7 +45,7 @@ export class DoctorComponent {
   constructor(public drservice:DoctorService,@Inject(DOCUMENT) private document:Document){
     this.email = sessionStorage.getItem("email");
 
-    this.dataSource = this.drservice.getSlots(this.email);
+//    this.dataSource = this.drservice.getSlots(this.email); I COMMENTED HERE
     //this.email = this.cookieservice.get("email");
     //console.log(this.email)
     //this.dataSource= this.drservice.getSlots(this.email);
@@ -57,12 +57,7 @@ export class DoctorComponent {
     this.dataSource= this.drservice.getSlots(this.email);
   }
 
-  parse(res){
-    for(let i=0;i<res.length;i++){
-      this.dataSource.push({"date":res[i].date,"hour":res[i].hour});
-    }
-    console.log('dataSource(Slots)',this.dataSource);
-  }
+
   async add(){
     let dateInput = this.document.getElementById("date") as HTMLInputElement;
     let hourInput = this.document.getElementById("time") as HTMLInputElement;

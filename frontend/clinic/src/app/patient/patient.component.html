@@ -11,7 +11,8 @@
 </div>
 
 <h2>Appointment</h2>
-<table mat-table ng-init="dataSource = getAppts()" [dataSource]="dataSource" >
+<div *ngIf="dataSource">
+<table mat-table [dataSource]="dataSource" >
     <ng-container [matColumnDef]="col.key" *ngFor="let col of columnsSchema">
       <th mat-header-cell *matHeaderCellDef>
         {{ col.label }}
@@ -49,7 +50,7 @@
             </mat-select>
             </mat-form-field>
             <mat-form-field *ngSwitchCase="'Doctor'" >
-            <mat-select [(value)]="element[col.key]" id="drname" (valueChange)="getSlotsMat()" >
+            <mat-select [(value)]="element[col.key]" id="drname" (valueChange)="onDoctorSelectionChange($event)" >
               <mat-option  *ngFor="let dr of doctors" [value]="dr.name" >{{dr.name}}</mat-option>
             </mat-select>
           </mat-form-field>
@@ -59,6 +60,7 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
   </table>
+</div>
 <h2>Add new Appointment</h2>
 <table border="1" id="slot">
     <tr><th><label for="drs"> Select Doctor</label></th> 
