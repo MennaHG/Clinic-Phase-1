@@ -57,7 +57,7 @@ export class PatientService {
     let email = sessionStorage.getItem("email");
     console.log(email);
   
-    const url = `${API_URL}/Patient/viewAppts/${email}`;
+    const url = `${API_URL}/Patient/viewApp/${email}`;
   
     // Use Angular's HttpClient for making HTTP requests
     return this.http.get(url)
