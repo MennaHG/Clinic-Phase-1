@@ -43,6 +43,7 @@ export class PatientComponent implements OnInit{
   dataSource:any;
   email:any;
   columnsSchema: any ;
+  DoctorName:string;
   DrSlots:string[] =[]; oldDr;newDr; oldTime;newTime;
   public doctors: { name: string; }[]=[];
   
@@ -98,8 +99,8 @@ export class PatientComponent implements OnInit{
     
   }
 
-  onDoctorSelectionChange(drname: string) {
-    console.log(name);
+  onDoctorSelectionChange(drname:string) {
+    console.log("Current Dr",drname);
     this.getSlotsMat(drname);
   }
   
@@ -149,6 +150,7 @@ export class PatientComponent implements OnInit{
 
   getSlotsMat(drname) {
     let res = this.patientservice.getSlots(drname);
+    this.DrSlots=[];
     for(let i=0;i<res.length;i++){
       let str = res[i].date+' '+res[i].hour;
       console.log(str);
