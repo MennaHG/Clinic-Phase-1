@@ -36,7 +36,7 @@ consumer = KafkaConsumer(kafka_topic, bootstrap_servers=kafka_bootstrap_servers,
 
 
 # the uri to connect to
-MONGODB_URI = "mongodb://localhost:27017"
+MONGODB_URI = "mongodb://mongo_container:27017"
 
 #established a connection to mongo SHOULD ONLY BE ONE CONNECTION ACROSS OUR APP
 client = MongoClient(MONGODB_URI)
