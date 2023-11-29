@@ -8,4 +8,4 @@ COPY main.py .
 
 ENV  FLASK_APP=main.py
 
-ENTRYPOINT flask run
+ENTRYPOINT flask run --host=0.0.0.0
