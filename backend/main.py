@@ -17,7 +17,7 @@ app.config['SESSION_COOKIE_SECURE'] = True  # Set to False if not using HTTPS
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 
 
-kafka_bootstrap_servers = 'kafka1:9092'
+kafka_bootstrap_servers = 'kafka1:29092'
 kafka_topic = 'clinic'
 
 
@@ -288,7 +288,7 @@ def cancelApp(email):
 #Consume an event
 @app.route("/consumeEvents",methods=["GET"])
 def consume_events():
-    max_messages = 3
+    max_messages = 1
     messages_processed = 0
     events = []
     consumer.poll(2)
