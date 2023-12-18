@@ -1,0 +1,13 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  labels:
+    app: quotes-api
+  name: quotes-api-route
+spec:
+  to:
+    kind: Service
+    name: quotes-api
+  port:
+    targetPort: 8080
+  type: NodePort
