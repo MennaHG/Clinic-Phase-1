@@ -16,7 +16,7 @@ CORS(app,supports_credentials=True)
 app.config['SESSION_COOKIE_SECURE'] = True  # Set to False if not using HTTPS
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 
-
+'''
 kafka_bootstrap_servers = 'kafka1:29092'
 kafka_topic = 'clinic'
 
@@ -31,12 +31,12 @@ consumer = KafkaConsumer(kafka_topic, bootstrap_servers=kafka_bootstrap_servers,
                          value_deserializer=lambda x: eval(x.decode('utf-8')))
  
 
-
+'''
 
 
 
 # the uri to connect to
-MONGODB_URI = "mongodb://mongo_container:27017"
+MONGODB_URI = "mongodb://172.30.86.30"
 
 #established a connection to mongo SHOULD ONLY BE ONE CONNECTION ACROSS OUR APP
 client = MongoClient(MONGODB_URI)
@@ -51,6 +51,10 @@ db = client.clinic
 @app.route("/")
 def hello_world():
     return "<p>Hello, World!</p>"
+
+@app.route("/works")
+def works():
+    return "<p>its works</p>"
 
 @app.route("/SignUp",methods=["POST"])
 def Signup():
@@ -203,7 +207,7 @@ def chooseSlot(email):
     
     appoinments_collection.update_one({'patientID':patient_id['_id']},{'$push':{'slots':{'date':date,'hour':time,'dremail':data['Doctor']}}})
 
-
+    '''
     event_data = {
         'doctorEmail': data['Doctor'],
         'patientEmail': email,
@@ -213,6 +217,7 @@ def chooseSlot(email):
     producer.send(kafka_topic, value=event_data)
     
     producer.flush(10)
+    '''
     return jsonify({"message":"appoinment added successfully"})
     
     
@@ -242,7 +247,7 @@ def updateApp(email):
             slots[i]['dremail'] = data['newDr']
             break
     appoinments_collection.update_one({'patientID':patient_id['_id']},{'$set':{'slots':slots}})
-    
+    '''
     event_data = {
         'doctorEmail': data['newDr'],
         'patientEmail': email,
@@ -252,6 +257,7 @@ def updateApp(email):
     producer.send(kafka_topic, value=event_data)
    
     producer.flush(10)
+    '''
     return jsonify({"message":"appoinment edited successfully"})
     
 
@@ -274,6 +280,7 @@ def cancelApp(email):
     index = next((i for i, slot in enumerate(slots) if slot['date'] == old_date and slot['hour'] == old_time and slot['dremail']== data['oldDr']), None)  
     del slots[index]
     appoinments_collection.update_one({'patientID':patient_id['_id']},{'$set':{'slots':slots}})
+    '''
     event_data = {
         'doctorEmail': data['oldDr'],
         'patientEmail': email,
@@ -282,9 +289,11 @@ def cancelApp(email):
     producer.send(kafka_topic, value=event_data)
     
     producer.flush(10)
+    '''
     return jsonify({"message":"appoinment  canceled successfully"})
+    
   
-
+'''
 #Consume an event
 @app.route("/consumeEvents",methods=["GET"])
 def consume_events():
@@ -305,6 +314,8 @@ def consume_events():
 
    
     return jsonify(events)
+    
+'''
     
 
 #Patients can view all his appointments.
