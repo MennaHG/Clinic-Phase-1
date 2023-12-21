@@ -6,6 +6,7 @@ from bson import ObjectId
 import json
 import subprocess
 from kafka import KafkaProducer, KafkaConsumer
+import os
 
 
 
@@ -15,6 +16,8 @@ CORS(app,supports_credentials=True)
 
 app.config['SESSION_COOKIE_SECURE'] = True  # Set to False if not using HTTPS
 app.config['SESSION_COOKIE_HTTPONLY'] = True
+
+port = int(os.environ.get('PORT', '5000'))
 
 
 kafka_bootstrap_servers = 'kafka1:29092'
@@ -321,4 +324,4 @@ def viewApp(email):
    return jsonify(appt_list)    
 
 if __name__ =="__main__":
-    app.run(host='0.0.0.0',debug=True)
+    app.run(host='0.0.0.0',debug=True,port=port)
