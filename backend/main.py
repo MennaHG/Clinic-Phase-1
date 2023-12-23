@@ -37,9 +37,16 @@ consumer = KafkaConsumer(kafka_topic, bootstrap_servers=kafka_bootstrap_servers,
 
 
 
-
 # the uri to connect to
-MONGODB_URI = "mongodb://mongo_container:27017"
+env_db_url = os.environ.get("db_url")
+
+# Check if env_db_url is not None, otherwise use the default
+if env_db_url:
+    MONGODB_URI = "mongodb://" + env_db_url
+else:
+    MONGODB_URI = "mongodb://mongo_container:27017"
+
+#MONGODB_URI = "mongodb://mongo_container:27017"
 
 #established a connection to mongo SHOULD ONLY BE ONE CONNECTION ACROSS OUR APP
 client = MongoClient(MONGODB_URI)
@@ -54,6 +61,10 @@ db = client.clinic
 @app.route("/")
 def hello_world():
     return "<p>Hello, World!</p>"
+
+@app.route('/config')
+def get_config():
+    return jsonify(port)
 
 @app.route("/SignUp",methods=["POST"])
 def Signup():
@@ -308,7 +319,7 @@ def consume_events():
 
    
     return jsonify(events)
-    
+   
 
 #Patients can view all his appointments.
 @app.route("/Patient/viewApp/<email>",methods=["GET"])
