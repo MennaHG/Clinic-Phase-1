@@ -24,6 +24,7 @@ import { PatientComponent } from './patient/patient.component';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormField, MatFormFieldModule } from '@angular/material/form-field';
 import { CookieService } from 'ngx-cookie-service';
+import { InboxComponent } from './inbox/inbox.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,6 +32,7 @@ import { CookieService } from 'ngx-cookie-service';
     UserLoginComponent,
     DoctorComponent,
     PatientComponent,
+    InboxComponent,
   ],
   imports: [
     BrowserModule,

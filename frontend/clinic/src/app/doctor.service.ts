@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import{API_URL} from './env';
 import { HttpClient } from '@angular/common/http';
-
+import { InboxComponent } from './inbox/inbox.component';
 interface TimeSlot {
    
       
@@ -13,7 +13,7 @@ interface TimeSlot {
   providedIn: 'root'
 })
 export class DoctorService {
-
+  
   constructor(private http: HttpClient) { }
   getSlots(email:string){
     let data=[]; let i=1;
@@ -66,4 +66,13 @@ export class DoctorService {
       error => console.error(error)
     );
   }
+  show() {
+    let inbox = new InboxComponent(this.http);
+    return inbox.show();
+}
+closing() {
+  let inbox = new InboxComponent(this.http);
+  return inbox.closing();
+}
+
 }

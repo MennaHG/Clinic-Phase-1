@@ -1,0 +1,52 @@
+
+.notification {
+    background-color: #555;
+    position: fixed;
+      bottom: 100;
+      right: 100;
+      size:40%;
+    color: white;
+    text-decoration: none;
+    padding: 15px 26px;
+    border-radius: 5px; 
+  }
+  
+  .notification:hover {
+    background: red;
+  }
+  
+  .notification .badge {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    padding: 5px 10px;
+    border-radius: 50%;
+    background: red;
+    color: white;
+  }
+  
+  #msgs{
+      background-color: #ffffff;
+      width: 420px;
+      padding: 30px 40px;
+      transform: translate(-50%,-50%);
+      border-radius: 8px;
+      display:none;
+      position: fixed;
+  
+      top: 70%;
+      left: 70%;
+      border: 2px solid black;
+      font-family: “Poppins”,sans-serif;
+      text-align: center;
+  }
+  .text{  
+      margin: 5px;
+      padding: 5px;
+      background-color: #FAF9F6;
+      color:black;
+       width: 90%;
+      height: 150px;
+      overflow: auto; 
+      text-align: justify;
+  }

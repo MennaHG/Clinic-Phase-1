@@ -5,6 +5,7 @@ import { MatDialog } from '@angular/material/dialog'
 import { MatTableDataSource } from '@angular/material/table'
 import { ColumnConfig } from 'material-dynamic-table';
 import { DoctorService } from '../doctor.service';
+import { InboxComponent } from '../inbox/inbox.component';
 import { CookieService } from 'ngx-cookie-service';
 
 let USER_DATA = [
@@ -116,5 +117,11 @@ export class DoctorComponent implements OnInit{
       };
       return this.drservice.editSlot(data);
 
+    }
+    show(){
+       return this.drservice.show();
+    }
+    closing(){
+      return this.drservice.closing();
     }
 }
