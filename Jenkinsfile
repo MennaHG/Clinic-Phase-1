@@ -23,6 +23,7 @@ pipeline {
         stage('CD') {
             steps {
                sh "echo ${DOCKERHUB_CREDENTIALS_PSW} | docker login -u mennahg --password-stdin"
+                sh "docker network prune -f"
               sh "docker network create front"
               sh "docker network create db"
               sh "docker run -d --name mongo_container -p 27017:27017 --net db mongo_image"
