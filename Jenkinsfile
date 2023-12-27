@@ -15,7 +15,7 @@ pipeline {
                sh "docker build -t mennahg/flask_image ./backend"
                sh "docker push mennahg/angular_image"
                sh "docker push mennahg/flask_image"
-               sh "docker push -t mennahg/mongo_image"
+               sh "docker push  mennahg/mongo_image"
                 }
             }
         
