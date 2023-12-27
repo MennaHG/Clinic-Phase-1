@@ -25,13 +25,13 @@ kafka_topic = 'clinic'
 
 
 #producer setup
-producer = KafkaProducer(bootstrap_servers=kafka_bootstrap_servers, value_serializer=lambda v: str(v).encode('utf-8'),batch_size=200)
+# producer = KafkaProducer(bootstrap_servers=kafka_bootstrap_servers, value_serializer=lambda v: str(v).encode('utf-8'),batch_size=200)
 
-#consumer setup
-consumer = KafkaConsumer(kafka_topic, bootstrap_servers=kafka_bootstrap_servers,
-                         group_id='reservation_consumer_group',  
-                         auto_offset_reset='earliest',
-                         value_deserializer=lambda x: eval(x.decode('utf-8')))
+# #consumer setup
+# consumer = KafkaConsumer(kafka_topic, bootstrap_servers=kafka_bootstrap_servers,
+#                          group_id='reservation_consumer_group',  
+#                          auto_offset_reset='earliest',
+#                          value_deserializer=lambda x: eval(x.decode('utf-8')))
  
 
 
@@ -224,9 +224,9 @@ def chooseSlot(email):
         'Operation':'ReservationCreated'
     }
     
-    producer.send(kafka_topic, value=event_data)
+    # producer.send(kafka_topic, value=event_data)
     
-    producer.flush(10)
+    # producer.flush(10)
     return jsonify({"message":"appoinment added successfully"})
     
     
@@ -263,9 +263,9 @@ def updateApp(email):
         'Operation':'ReservationUpdated'
     }
     
-    producer.send(kafka_topic, value=event_data)
+    # producer.send(kafka_topic, value=event_data)
    
-    producer.flush(10)
+    # producer.flush(10)
     return jsonify({"message":"appoinment edited successfully"})
     
 
@@ -293,32 +293,32 @@ def cancelApp(email):
         'patientEmail': email,
         'Operation':'ReservationCanceled'
     }
-    producer.send(kafka_topic, value=event_data)
+    # producer.send(kafka_topic, value=event_data)
     
-    producer.flush(10)
+    # producer.flush(10)
     return jsonify({"message":"appoinment  canceled successfully"})
   
 
-#Consume an event
-@app.route("/consumeEvents",methods=["GET"])
-def consume_events():
-    max_messages = 1
-    messages_processed = 0
-    events = []
-    consumer.poll(2)
+# #Consume an event
+# @app.route("/consumeEvents",methods=["GET"])
+# def consume_events():
+#     max_messages = 1
+#     messages_processed = 0
+#     events = []
+#     consumer.poll(2)
     
-    for message in consumer:
-        print(message.value)
-        events.append(message.value)
-        messages_processed+=1
-        if messages_processed>=max_messages:
-            break
+#     for message in consumer:
+#         print(message.value)
+#         events.append(message.value)
+#         messages_processed+=1
+#         if messages_processed>=max_messages:
+#             break
         
     
         
 
    
-    return jsonify(events)
+#     return jsonify(events)
    
 
 #Patients can view all his appointments.

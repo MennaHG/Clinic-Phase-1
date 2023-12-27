@@ -1,4 +1,4 @@
-import { Component,Renderer2,Inject, OnInit, ElementRef,DefaultIterableDiffer } from '@angular/core';
+import { Component,Renderer2,Inject, OnInit, ElementRef,DefaultIterableDiffer, ViewChild } from '@angular/core';
 import { DOCUMENT } from '@angular/common';
 import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog'
@@ -36,6 +36,7 @@ const COLUMNS_SCHEMA = [
   styleUrls: ['./doctor.component.css']
 })
 export class DoctorComponent implements OnInit{
+  @ViewChild(InboxComponent) inboxComponent!: InboxComponent;
 
   displayedColumns: string[] = COLUMNS_SCHEMA.map((col) => col.key);
  // dataSource = this.drservice.getSlots(sessionStorage.getItem("email"));
@@ -119,9 +120,9 @@ export class DoctorComponent implements OnInit{
 
     }
     show(){
-       return this.drservice.show();
+       return this.inboxComponent.show();
     }
     closing(){
-      return this.drservice.closing();
+      return this.inboxComponent.closing();
     }
 }
